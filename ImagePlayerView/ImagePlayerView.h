@@ -6,8 +6,19 @@
 //  Copyright (c) 2014年 Chenyanjun. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
-@interface ImagePlayerView : NSObject
+@protocol ImagePlayerViewDelegate;
+
+@interface ImagePlayerView : UIScrollView
+@property (nonatomic, assign) id<ImagePlayerViewDelegate> imagePlayerViewDelegate;
+
+- (void)initWithImageURLs:(NSArray *)imageURLs placeholder:(UIImage *)placeholder delegate:(id<ImagePlayerViewDelegate>)delegate;
+@end
+
+@protocol ImagePlayerViewDelegate <NSObject>
+
+@optional
+- (void)imagePlayerView:(ImagePlayerView *)imagePlayerView didTapAtIndex:(NSInteger)index imageURL:(NSURL *)imageURL;
 
 @end

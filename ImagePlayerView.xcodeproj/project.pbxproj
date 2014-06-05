@@ -16,6 +16,7 @@
 		4B6F44FD19402114003A88A8 /* libImagePlayerView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B6F44E519402114003A88A8 /* libImagePlayerView.a */; };
 		4B6F450319402114003A88A8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4B6F450119402114003A88A8 /* InfoPlist.strings */; };
 		4B6F450519402114003A88A8 /* ImagePlayerViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B6F450419402114003A88A8 /* ImagePlayerViewTests.m */; };
+		4B6F458619403846003A88A8 /* libSDWebImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B6F457A194030B4003A88A8 /* libSDWebImage.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,6 +26,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = 4B6F44E419402114003A88A8;
 			remoteInfo = ImagePlayerView;
+		};
+		4B6F4579194030B4003A88A8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4B6F4572194030B4003A88A8 /* SDWebImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 53761325155AD0D5005750A4;
+			remoteInfo = SDWebImage;
+		};
+		4B6F457B194030B4003A88A8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4B6F4572194030B4003A88A8 /* SDWebImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 537D95C117ECC1FE0097C263;
+			remoteInfo = "SDWebImage+WebP";
+		};
+		4B6F457D194030B4003A88A8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4B6F4572194030B4003A88A8 /* SDWebImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 531041E0157EAFA400BBABC3;
+			remoteInfo = "SDWebImage+MKAnnotation";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -53,6 +75,7 @@
 		4B6F450019402114003A88A8 /* ImagePlayerViewTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ImagePlayerViewTests-Info.plist"; sourceTree = "<group>"; };
 		4B6F450219402114003A88A8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4B6F450419402114003A88A8 /* ImagePlayerViewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImagePlayerViewTests.m; sourceTree = "<group>"; };
+		4B6F4572194030B4003A88A8 /* SDWebImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDWebImage.xcodeproj; path = SDWebImage/SDWebImage.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B6F458619403846003A88A8 /* libSDWebImage.a in Frameworks */,
 				4B6F44E919402114003A88A8 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -81,6 +105,7 @@
 		4B6F44DC19402114003A88A8 = {
 			isa = PBXGroup;
 			children = (
+				4B6F4572194030B4003A88A8 /* SDWebImage.xcodeproj */,
 				4B6F44EA19402114003A88A8 /* ImagePlayerView */,
 				4B6F44FE19402114003A88A8 /* ImagePlayerViewTests */,
 				4B6F44E719402114003A88A8 /* Frameworks */,
@@ -143,6 +168,16 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		4B6F4573194030B4003A88A8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4B6F457A194030B4003A88A8 /* libSDWebImage.a */,
+				4B6F457C194030B4003A88A8 /* libSDWebImage+WebP.a */,
+				4B6F457E194030B4003A88A8 /* libSDWebImage+MKAnnotation.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -200,6 +235,12 @@
 			mainGroup = 4B6F44DC19402114003A88A8;
 			productRefGroup = 4B6F44E619402114003A88A8 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 4B6F4573194030B4003A88A8 /* Products */;
+					ProjectRef = 4B6F4572194030B4003A88A8 /* SDWebImage.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				4B6F44E419402114003A88A8 /* ImagePlayerView */,
@@ -207,6 +248,30 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		4B6F457A194030B4003A88A8 /* libSDWebImage.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDWebImage.a;
+			remoteRef = 4B6F4579194030B4003A88A8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4B6F457C194030B4003A88A8 /* libSDWebImage+WebP.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libSDWebImage+WebP.a";
+			remoteRef = 4B6F457B194030B4003A88A8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4B6F457E194030B4003A88A8 /* libSDWebImage+MKAnnotation.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libSDWebImage+MKAnnotation.a";
+			remoteRef = 4B6F457D194030B4003A88A8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		4B6F44F319402114003A88A8 /* Resources */ = {
@@ -332,6 +397,12 @@
 				DSTROOT = /tmp/ImagePlayerView.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ImagePlayerView/ImagePlayerView-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"$(OBJROOT)/UninstalledProducts/include\"",
+					"\"$(TARGET_BUILD_DIR)/usr/local/lib/include\"",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -344,6 +415,12 @@
 				DSTROOT = /tmp/ImagePlayerView.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ImagePlayerView/ImagePlayerView-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"$(OBJROOT)/UninstalledProducts/include\"",
+					"\"$(TARGET_BUILD_DIR)/usr/local/lib/include\"",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
