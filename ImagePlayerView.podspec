@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "ImagePlayerView"
-  s.version      = "0.2"
+  s.version      = "0.3"
   s.summary      = "To show images in UIScrollView, support AutoLayout."
 
   s.description  = 'To show images in UIScrollView, support AutoLayout.'  \
@@ -72,7 +72,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/interchen/ImagePlayerView.git", :tag => "0.2" }
+  s.source       = { :git => "https://github.com/interchen/ImagePlayerView.git", :tag => "0.3" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
