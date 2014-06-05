@@ -482,6 +482,7 @@
 				4B6F450A19402114003A88A8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4B6F450B19402114003A88A8 /* Build configuration list for PBXNativeTarget "ImagePlayerViewTests" */ = {
 			isa = XCConfigurationList;
@@ -490,6 +491,7 @@
 				4B6F450D19402114003A88A8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
