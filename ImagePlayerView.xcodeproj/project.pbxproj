@@ -20,6 +20,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		4B29CFFA19414CBB009D65CA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4B6F4572194030B4003A88A8 /* SDWebImage.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 53761307155AD0D5005750A4;
+			remoteInfo = SDWebImage;
+		};
 		4B6F44FB19402114003A88A8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4B6F44DD19402114003A88A8 /* Project object */;
@@ -192,6 +199,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				4B29CFFB19414CBB009D65CA /* PBXTargetDependency */,
 			);
 			name = ImagePlayerView;
 			productName = ImagePlayerView;
@@ -304,6 +312,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		4B29CFFB19414CBB009D65CA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SDWebImage;
+			targetProxy = 4B29CFFA19414CBB009D65CA /* PBXContainerItemProxy */;
+		};
 		4B6F44FC19402114003A88A8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 4B6F44E419402114003A88A8 /* ImagePlayerView */;
