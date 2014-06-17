@@ -81,9 +81,6 @@
                                                                  metrics:nil
                                                                    views:@{@"pageControl": self.pageControl}]];
     
-    // scroll timer
-    self.autoScrollTimer = [NSTimer scheduledTimerWithTimeInterval:self.scrollInterval target:self selector:@selector(handleScrollTimer:) userInfo:nil repeats:YES];
-    
 }
 
 - (void)initWithImageURLs:(NSArray *)imageURLs placeholder:(UIImage *)placeholder delegate:(id<ImagePlayerViewDelegate>)delegate
@@ -191,6 +188,18 @@
             self.autoScrollTimer = nil;
         }
     }
+}
+
+- (void)setScrollInterval:(NSUInteger)scrollInterval
+{
+    _scrollInterval = scrollInterval;
+    
+    if (self.autoScrollTimer && self.autoScrollTimer.isValid) {
+        [self.autoScrollTimer invalidate];
+        self.autoScrollTimer = nil;
+    }
+    
+    self.autoScrollTimer = [NSTimer scheduledTimerWithTimeInterval:self.scrollInterval target:self selector:@selector(handleScrollTimer:) userInfo:nil repeats:YES];
 }
 
 - (void)handleScrollTimer:(NSTimer *)timer

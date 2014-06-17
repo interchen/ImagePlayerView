@@ -25,6 +25,7 @@
                            [NSURL URLWithString:@"http://fzone.oushinet.com/bbs/data/attachment/forum/201208/15/074140zsb6ko6hfhzrb40q.jpg"]];
     
     [self.imagePlayerView initWithImageURLs:imageURLs placeholder:nil delegate:self];
+    self.imagePlayerView.scrollInterval = 5.0f;
 }
 
 - (void)didReceiveMemoryWarning
