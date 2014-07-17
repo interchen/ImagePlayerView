@@ -328,5 +328,10 @@
     
     [self addConstraints:self.pageControlConstraints];
 }
+
+- (void)setHidePageControl:(BOOL)hidePageControl
+{
+    self.pageControl.hidden = hidePageControl;
+}
 @end
 

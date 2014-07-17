@@ -26,7 +26,8 @@
     
     [self.imagePlayerView initWithImageURLs:imageURLs placeholder:nil delegate:self];
     self.imagePlayerView.scrollInterval = 5.0f;
-    self.imagePlayerView.pageControlPosition = ICPageControlPosition_BottomRight;
+    self.imagePlayerView.pageControlPosition = ICPageControlPosition_BottomLeft;
+    self.imagePlayerView.hidePageControl = NO;
 }
 
 - (void)didReceiveMemoryWarning
