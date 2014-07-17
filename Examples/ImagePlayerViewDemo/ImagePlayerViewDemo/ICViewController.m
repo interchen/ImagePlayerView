@@ -26,7 +26,11 @@
     
     [self.imagePlayerView initWithImageURLs:imageURLs placeholder:nil delegate:self];
     self.imagePlayerView.scrollInterval = 5.0f;
+    
+    // adjust pageControl position
     self.imagePlayerView.pageControlPosition = ICPageControlPosition_BottomLeft;
+    
+    // hide pageControl or not
     self.imagePlayerView.hidePageControl = NO;
 }
 
