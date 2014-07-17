@@ -17,6 +17,7 @@
 @property (nonatomic, strong) NSArray *imageURLs;
 @property (nonatomic, strong) NSTimer *autoScrollTimer;
 @property (nonatomic, strong) UIPageControl *pageControl;
+@property (nonatomic, strong) NSMutableArray *pageControlConstraints;
 @end
 
 @implementation ImagePlayerView
@@ -72,14 +73,20 @@
     self.pageControl.currentPage = 0;
     [self addSubview:self.pageControl];
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[pageControl]-0-|"
-                                                                 options:kNilOptions
-                                                                 metrics:nil
-                                                                   views:@{@"pageControl": self.pageControl}]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[pageControl]-|"
-                                                                 options:kNilOptions
-                                                                 metrics:nil
-                                                                   views:@{@"pageControl": self.pageControl}]];
+    NSArray *pageControlVConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[pageControl]-0-|"
+                                                                               options:kNilOptions
+                                                                               metrics:nil
+                                                                                 views:@{@"pageControl": self.pageControl}];
+    
+    NSArray *pageControlHConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[pageControl]-|"
+                                                                               options:kNilOptions
+                                                                               metrics:nil
+                                                                                 views:@{@"pageControl": self.pageControl}];
+    
+    self.pageControlConstraints = [NSMutableArray arrayWithArray:pageControlVConstraints];
+    [self.pageControlConstraints addObjectsFromArray:pageControlHConstraints];
+    
+    [self addConstraints:self.pageControlConstraints];
     
 }
 
@@ -256,5 +263,70 @@
     self.pageControl.currentPage = currentIndex;
 }
 
+#pragma mark -
+- (void)setPageControlPosition:(ICPageControlPosition)pageControlPosition
+{
+    NSString *vFormat = nil;
+    NSString *hFormat = nil;
+    
+    switch (pageControlPosition) {
+        case ICPageControlPosition_TopLeft: {
+            vFormat = @"V:|-0-[pageControl]";
+            hFormat = @"H:|-[pageControl]";
+            break;
+        }
+            
+        case ICPageControlPosition_TopCenter: {
+            vFormat = @"V:|-0-[pageControl]";
+            hFormat = @"H:|[pageControl]|";
+            break;
+        }
+            
+        case ICPageControlPosition_TopRight: {
+            vFormat = @"V:|-0-[pageControl]";
+            hFormat = @"H:[pageControl]-|";
+            break;
+        }
+            
+        case ICPageControlPosition_BottomLeft: {
+            vFormat = @"V:[pageControl]-0-|";
+            hFormat = @"H:|-[pageControl]";
+            break;
+        }
+            
+        case ICPageControlPosition_BottomCenter: {
+            vFormat = @"V:[pageControl]-0-|";
+            hFormat = @"H:|[pageControl]|";
+            break;
+        }
+            
+        case ICPageControlPosition_BottomRight: {
+            vFormat = @"V:[pageControl]-0-|";
+            hFormat = @"H:[pageControl]-|";
+            break;
+        }
+            
+        default:
+            break;
+    }
+    
+    [self removeConstraints:self.pageControlConstraints];
+    
+    NSArray *pageControlVConstraints = [NSLayoutConstraint constraintsWithVisualFormat:vFormat
+                                                                               options:kNilOptions
+                                                                               metrics:nil
+                                                                                 views:@{@"pageControl": self.pageControl}];
+    
+    NSArray *pageControlHConstraints = [NSLayoutConstraint constraintsWithVisualFormat:hFormat
+                                                                               options:kNilOptions
+                                                                               metrics:nil
+                                                                                 views:@{@"pageControl": self.pageControl}];
+    
+    [self.pageControlConstraints removeAllObjects];
+    [self.pageControlConstraints addObjectsFromArray:pageControlVConstraints];
+    [self.pageControlConstraints addObjectsFromArray:pageControlHConstraints];
+    
+    [self addConstraints:self.pageControlConstraints];
+}
 @end
 
