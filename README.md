@@ -6,6 +6,11 @@ ImagePlayerView
 * Support Auto Layout
 * Need [SDWebImage](https://github.com/rs/SDWebImage) libray to load remote image to UIImageView
 
+##Import
+```objective-c
+pod 'ImagePlayerView'
+```
+
 ##Usage
 ```objective-c
 NSArray *imageURLs = @[[NSURL URLWithString:@"http://www.ghzw.cn/wzsq/UploadFiles_9194/201109/20110915154150869.bmp"],
@@ -18,3 +23,7 @@ NSArray *imageURLs = @[[NSURL URLWithString:@"http://www.ghzw.cn/wzsq/UploadFile
 
 ##Show
 ![image](https://raw.githubusercontent.com/interchen/ImagePlayerView/master/Images/ImagePlayerView-01.png)
+
+##ToDo's
+* Add property to show/hide UIPageControl
+* Add property to adjust UIPageControl
