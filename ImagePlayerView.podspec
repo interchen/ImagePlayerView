@@ -16,12 +16,9 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "ImagePlayerView"
-  s.version      = "0.3.1"
-  s.summary      = "To show images in UIScrollView, support AutoLayout."
-
-  s.description  = 'To show images in UIScrollView, support AutoLayout.'  \
-                   'Need SDWebImage libray to load remote image to UIImageView'
-
+  s.version      = "0.4"
+  s.summary      = "Show a group of images in view"
+  s.description  = 'Show a group of images in view'
   s.homepage     = "https://github.com/interchen/ImagePlayerView.git"
   # s.screenshots  = "www.example.com/screenshots_1.gif", "www.example.com/screenshots_2.gif"
 
@@ -72,7 +69,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/interchen/ImagePlayerView.git", :tag => "0.3.1" }
+  s.source       = { :git => "https://github.com/interchen/ImagePlayerView.git", :tag => "0.4" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
