@@ -7,14 +7,14 @@
 //
 
 #import "ImagePlayerView.h"
-#import <SDWebImage/UIImageView+WebCache.h>
 
 #define kStartTag   1000
 #define kDefaultScrollInterval  2
 
 @interface ImagePlayerView() <UIScrollViewDelegate>
 @property (nonatomic, strong) UIScrollView *scrollView;
-@property (nonatomic, strong) NSArray *imageURLs;
+//@property (nonatomic, strong) NSArray *imageURLs;
+@property (nonatomic, assign) NSInteger count;
 @property (nonatomic, strong) NSTimer *autoScrollTimer;
 @property (nonatomic, strong) UIPageControl *pageControl;
 @property (nonatomic, strong) NSMutableArray *pageControlConstraints;
@@ -69,7 +69,7 @@
     // UIPageControl
     self.pageControl = [[UIPageControl alloc] init];
     self.pageControl.translatesAutoresizingMaskIntoConstraints = NO;
-    self.pageControl.numberOfPages = self.imageURLs.count;
+    self.pageControl.numberOfPages = self.count;
     self.pageControl.currentPage = 0;
     [self addSubview:self.pageControl];
     
@@ -90,13 +90,28 @@
     
 }
 
+// @deprecated use - (void)initWithCount:(NSInteger)count delegate:(id<ImagePlayerViewDelegate>)delegate instead
 - (void)initWithImageURLs:(NSArray *)imageURLs placeholder:(UIImage *)placeholder delegate:(id<ImagePlayerViewDelegate>)delegate
 {
-    [self initWithImageURLs:imageURLs placeholder:placeholder delegate:delegate edgeInsets:UIEdgeInsetsZero];
+    [self initWithCount:imageURLs.count delegate:delegate edgeInsets:UIEdgeInsetsZero];
 }
 
+// @deprecated use - (void)initWithCount:(NSInteger)count delegate:(id<ImagePlayerViewDelegate>)delegate edgeInsets:(UIEdgeInsets)edgeInsets instead
 - (void)initWithImageURLs:(NSArray *)imageURLs placeholder:(UIImage *)placeholder delegate:(id<ImagePlayerViewDelegate>)delegate edgeInsets:(UIEdgeInsets)edgeInsets
 {
+    [self initWithCount:imageURLs.count delegate:delegate edgeInsets:edgeInsets];
+}
+
+- (void)initWithCount:(NSInteger)count delegate:(id<ImagePlayerViewDelegate>)delegate
+{
+    [self initWithCount:count delegate:delegate edgeInsets:UIEdgeInsetsZero];
+}
+
+- (void)initWithCount:(NSInteger)count delegate:(id<ImagePlayerViewDelegate>)delegate edgeInsets:(UIEdgeInsets)edgeInsets
+{
+    self.count = count;
+    self.imagePlayerViewDelegate = delegate;
+    
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-%d-[scrollView]-%d-|", (int)edgeInsets.top, (int)edgeInsets.bottom]
                                                                  options:kNilOptions
                                                                  metrics:nil
@@ -106,21 +121,18 @@
                                                                  metrics:nil
                                                                    views:@{@"scrollView": self.scrollView}]];
     
-    self.imageURLs = imageURLs;
-    self.imagePlayerViewDelegate = delegate;
-    
-    if (imageURLs.count == 0) {
+    if (count == 0) {
         return;
     }
     
-    self.pageControl.numberOfPages = self.imageURLs.count;
+    self.pageControl.numberOfPages = count;
     self.pageControl.currentPage = 0;
     
     CGFloat startX = self.scrollView.bounds.origin.x;
     CGFloat width = self.bounds.size.width - edgeInsets.left - edgeInsets.right;
     CGFloat height = self.bounds.size.height - edgeInsets.top - edgeInsets.bottom;
     
-    for (int i = 0; i < imageURLs.count; i++) {
+    for (int i = 0; i < count; i++) {
         startX = i * width;
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(startX, 0, width, height)];
         imageView.contentMode = UIViewContentModeScaleToFill;
@@ -132,8 +144,7 @@
         [imageView addConstraint:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:width]];
         [imageView addConstraint:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:height]];
         
-        NSURL *url = [imageURLs objectAtIndex:i];
-        [imageView setImageWithURL:url placeholderImage:placeholder];
+        [self.imagePlayerViewDelegate imagePlayerView:self loadImageForImageView:imageView index:i];
         
         [self.scrollView addSubview:imageView];
     }
@@ -141,7 +152,7 @@
     // constraint
     NSMutableDictionary *viewsDictionary = [NSMutableDictionary dictionary];
     NSMutableArray *imageViewNames = [NSMutableArray array];
-    for (int i = kStartTag; i < kStartTag + imageURLs.count; i++) {
+    for (int i = kStartTag; i < kStartTag + count; i++) {
         NSString *imageViewName = [NSString stringWithFormat:@"imageView%d", i - kStartTag];
         [imageViewNames addObject:imageViewName];
         
@@ -166,7 +177,7 @@
                                                                             metrics:nil
                                                                               views:viewsDictionary]];
     
-    self.scrollView.contentSize = CGSizeMake(self.scrollView.frame.size.width * imageURLs.count, self.scrollView.frame.size.height);
+    self.scrollView.contentSize = CGSizeMake(self.scrollView.frame.size.width * count, self.scrollView.frame.size.height);
     self.scrollView.contentInset = UIEdgeInsetsZero;
 }
 
@@ -175,8 +186,8 @@
     UIImageView *imageView = (UIImageView *)tapGesture.view;
     NSInteger index = imageView.tag - kStartTag;
     
-    if (self.imagePlayerViewDelegate && [self.imagePlayerViewDelegate respondsToSelector:@selector(imagePlayerView:didTapAtIndex:imageURL:)]) {
-        [self.imagePlayerViewDelegate imagePlayerView:self didTapAtIndex:index imageURL:[self.imageURLs objectAtIndex:index]];
+    if (self.imagePlayerViewDelegate && [self.imagePlayerViewDelegate respondsToSelector:@selector(imagePlayerView:didTapAtIndex:)]) {
+        [self.imagePlayerViewDelegate imagePlayerView:self didTapAtIndex:index];
     }
 }
 
@@ -211,13 +222,13 @@
 
 - (void)handleScrollTimer:(NSTimer *)timer
 {
-    if (self.imageURLs.count == 0) {
+    if (self.count == 0) {
         return;
     }
     
     NSInteger currentPage = self.pageControl.currentPage;
     NSInteger nextPage = currentPage + 1;
-    if (nextPage == self.imageURLs.count) {
+    if (nextPage == self.count) {
         nextPage = 0;
     }
     

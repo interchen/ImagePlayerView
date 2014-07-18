@@ -22,7 +22,6 @@
 		4B29CFD119414861009D65CA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4B29CFCF19414861009D65CA /* InfoPlist.strings */; };
 		4B29CFD319414861009D65CA /* ImagePlayerViewDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B29CFD219414861009D65CA /* ImagePlayerViewDemoTests.m */; };
 		4B29CFF519414BB5009D65CA /* libImagePlayerView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B29CFF219414B90009D65CA /* libImagePlayerView.a */; };
-		4B29D00319415120009D65CA /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B29D00219415120009D65CA /* ImageIO.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,7 +76,6 @@
 		4B29CFD019414861009D65CA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4B29CFD219414861009D65CA /* ImagePlayerViewDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImagePlayerViewDemoTests.m; sourceTree = "<group>"; };
 		4B29CFEB19414B90009D65CA /* ImagePlayerView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ImagePlayerView.xcodeproj; path = ../../ImagePlayerView.xcodeproj; sourceTree = "<group>"; };
-		4B29D00019414FF3009D65CA /* libSDWebImage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDWebImage.a; path = "../../SDWebImage/build/Debug-iphoneos/libSDWebImage.a"; sourceTree = "<group>"; };
 		4B29D00219415120009D65CA /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -86,7 +84,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4B29D00319415120009D65CA /* ImageIO.framework in Frameworks */,
 				4B29CFF519414BB5009D65CA /* libImagePlayerView.a in Frameworks */,
 				4B29CFAA19414861009D65CA /* CoreGraphics.framework in Frameworks */,
 				4B29CFAC19414861009D65CA /* UIKit.framework in Frameworks */,
@@ -130,7 +127,6 @@
 			isa = PBXGroup;
 			children = (
 				4B29D00219415120009D65CA /* ImageIO.framework */,
-				4B29D00019414FF3009D65CA /* libSDWebImage.a */,
 				4B29CFEB19414B90009D65CA /* ImagePlayerView.xcodeproj */,
 				4B29CFA719414861009D65CA /* Foundation.framework */,
 				4B29CFA919414861009D65CA /* CoreGraphics.framework */,
