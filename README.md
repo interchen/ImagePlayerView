@@ -5,6 +5,9 @@ ImagePlayerView
 * Support Auto Layout
 * UIPageControl, remove option
 
+##Show
+![image](https://raw.githubusercontent.com/interchen/ImagePlayerView/master/Images/ImagePlayerView-01.png)
+
 ##Installation with CocoaPods
 ```objective-c
 pod 'ImagePlayerView'
@@ -56,6 +59,4 @@ remove dependence on [SDWebImage](https://github.com/rs/SDWebImage) lib, you sho
 pod 'ImagePlayerView'
 ```
 
-##Show
-![image](https://raw.githubusercontent.com/interchen/ImagePlayerView/master/Images/ImagePlayerView-01.png)
 
