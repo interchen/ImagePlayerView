@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
   s.name         = "ImagePlayerView"
   s.version      = "0.4"
   s.summary      = "Show a group of images in view"
-  s.description  = 'Show a group of images in view'
+  s.description  = 'Show a group of images in view, only few code to support'
   s.homepage     = "https://github.com/interchen/ImagePlayerView.git"
   # s.screenshots  = "www.example.com/screenshots_1.gif", "www.example.com/screenshots_2.gif"
 
