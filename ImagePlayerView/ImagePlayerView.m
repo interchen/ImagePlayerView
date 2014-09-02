@@ -183,6 +183,11 @@
 
 - (void)handleClickPageControl:(UIPageControl *)sender
 {
+    if (self.autoScrollTimer && self.autoScrollTimer.isValid) {
+        [self.autoScrollTimer invalidate];
+    }
+    self.autoScrollTimer = [NSTimer scheduledTimerWithTimeInterval:self.scrollInterval target:self selector:@selector(handleScrollTimer:) userInfo:nil repeats:YES];
+    
     UIImageView *imageView = (UIImageView *)[self.scrollView viewWithTag:(sender.currentPage + kStartTag)];
     [self.scrollView scrollRectToVisible:imageView.frame animated:YES];
 }
