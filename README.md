@@ -16,17 +16,19 @@ pod 'ImagePlayerView'
 ##Usage
 ###init
 ```objective-c
-self.imageURLs = @[[NSURL URLWithString:@"http://www.ghzw.cn/wzsq/UploadFiles_9194/201109/20110915154150869.bmp"],
-                   [NSURL URLWithString:@"http://sudasuta.com/wp-content/uploads/2013/10/10143181686_375e063f2c_z.jpg"],
+self.imageURLs = @[[NSURL URLWithString:@"http://sudasuta.com/wp-content/uploads/2013/10/10143181686_375e063f2c_z.jpg"],
                    [NSURL URLWithString:@"http://www.yancheng.gov.cn/ztzl/zgycddhsdgy/xwdt/201109/W020110902584601289616.jpg"],
                    [NSURL URLWithString:@"http://fzone.oushinet.com/bbs/data/attachment/forum/201208/15/074140zsb6ko6hfhzrb40q.jpg"]];
-    
-[self.imagePlayerView initWithCount:self.imageURLs.count delegate:self];
 ```
 
 ###implement delegate to load image
 ```objective-c
 #pragma mark - ImagePlayerViewDelegate
+- (NSInteger)numberOfItems
+{
+    return self.imageURLs.count;
+}
+
 - (void)imagePlayerView:(ImagePlayerView *)imagePlayerView loadImageForImageView:(UIImageView *)imageView index:(NSInteger)index
 {
     // recommend to use SDWebImage lib to load web image
@@ -44,6 +46,11 @@ self.imagePlayerView.pageControlPosition = ICPageControlPosition_BottomLeft;
 ###hide pageControl or not
 ```objective-c
 self.imagePlayerView.hidePageControl = NO;
+```
+
+###adjust edgeInset
+```objective-c
+self.imagePlayerView.edgeInsets = UIEdgeInsetsMake(10, 20, 30, 40);
 ```
 
 ##Versions
