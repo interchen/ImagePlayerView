@@ -25,7 +25,19 @@ typedef NS_ENUM(NSInteger, ICPageControlPosition) {
 @property (nonatomic, assign) NSUInteger scrollInterval;    // scroll interval, unit: second, default is 2 seconds
 @property (nonatomic, assign) ICPageControlPosition pageControlPosition;    // pageControl position, defautl is bottomright
 @property (nonatomic, assign) BOOL hidePageControl; // hide pageControl, default is NO
+@property (nonatomic, assign) UIEdgeInsets edgeInsets;
 
+/**
+ *  Reload everything
+ */
+- (void)reloadData;
+
+/**
+ *  Stop timer before your view controller is poped
+ */
+- (void)stopTimer;
+
+#pragma mark - deprecated methods
 /**
  *  Init image player
  *
@@ -52,8 +64,9 @@ typedef NS_ENUM(NSInteger, ICPageControlPosition) {
  *
  *  @param count
  *  @param delegate
+ *  @deprecated implement ImagePlayerViewDelegate
  */
-- (void)initWithCount:(NSInteger)count delegate:(id<ImagePlayerViewDelegate>)delegate;
+- (void)initWithCount:(NSInteger)count delegate:(id<ImagePlayerViewDelegate>)delegate DEPRECATED_ATTRIBUTE;
 
 /**
  *  Init image player
@@ -61,13 +74,23 @@ typedef NS_ENUM(NSInteger, ICPageControlPosition) {
  *  @param count
  *  @param delegate
  *  @param edgeInsets scroll view edgeInsets
+ *  @deprecated implement ImagePlayerViewDelegate
  */
-- (void)initWithCount:(NSInteger)count delegate:(id<ImagePlayerViewDelegate>)delegate edgeInsets:(UIEdgeInsets)edgeInsets;
+- (void)initWithCount:(NSInteger)count delegate:(id<ImagePlayerViewDelegate>)delegate edgeInsets:(UIEdgeInsets)edgeInsets DEPRECATED_ATTRIBUTE;
+
 @end
 
+#pragma mark - ImagePlayerViewDelegate
 @protocol ImagePlayerViewDelegate <NSObject>
 
 @required
+/**
+ *  Number of items
+ *
+ *  @return Number of items
+ */
+- (NSInteger)numberOfItems;
+
 /**
  *  Init imageview
  *
@@ -78,6 +101,16 @@ typedef NS_ENUM(NSInteger, ICPageControlPosition) {
 - (void)imagePlayerView:(ImagePlayerView *)imagePlayerView loadImageForImageView:(UIImageView *)imageView index:(NSInteger)index;
 
 @optional
+
+/**
+ *  Tap ImageView action
+ *
+ *  @param imagePlayerView ImagePlayerView object
+ *  @param index           index of imageview
+ */
+- (void)imagePlayerView:(ImagePlayerView *)imagePlayerView didTapAtIndex:(NSInteger)index;
+
+#pragma mark - deprecated protocol methods
 /**
  *  Tap ImageView action
  *
@@ -87,12 +120,4 @@ typedef NS_ENUM(NSInteger, ICPageControlPosition) {
  *  @deprecated use - (void)imagePlayerView:(ImagePlayerView *)imagePlayerView didTapAtIndex:(NSInteger)index instead
  */
 - (void)imagePlayerView:(ImagePlayerView *)imagePlayerView didTapAtIndex:(NSInteger)index imageURL:(NSURL *)imageURL DEPRECATED_ATTRIBUTE;
-
-/**
- *  Tap ImageView action
- *
- *  @param imagePlayerView ImagePlayerView object
- *  @param index           index of imageview
- */
-- (void)imagePlayerView:(ImagePlayerView *)imagePlayerView didTapAtIndex:(NSInteger)index;
 @end
