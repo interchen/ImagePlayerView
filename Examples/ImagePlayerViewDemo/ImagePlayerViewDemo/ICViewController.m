@@ -34,6 +34,7 @@
     // hide pageControl or not
     self.imagePlayerView.hidePageControl = NO;
     
+    // adjust edgeInset
     self.imagePlayerView.edgeInsets = UIEdgeInsetsMake(10, 20, 30, 40);
     
     [self.imagePlayerView reloadData];
