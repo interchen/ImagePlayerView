@@ -61,6 +61,8 @@
 
 - (void)_init
 {
+    [self addObserver:self forKeyPath:@"bounds" options:NSKeyValueObservingOptionNew context:NULL];
+    
     self.scrollViewConstraints = [NSMutableArray array];
     
     self.scrollInterval = kDefaultScrollInterval;
@@ -102,6 +104,13 @@
     self.edgeInsets = UIEdgeInsetsZero;
     
     [self reloadData];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"bounds"]) {
+        [self reloadData];
+    }
 }
 
 - (void)reloadData
