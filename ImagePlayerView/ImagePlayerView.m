@@ -40,15 +40,6 @@
     return self;
 }
 
-- (id)init
-{
-    self = [super init];
-    if (self) {
-        [self _init];
-    }
-    return self;
-}
-
 - (id)initWithDelegate:(id<ImagePlayerViewDelegate>)delegate
 {
     self = [super init];
@@ -68,8 +59,10 @@
     self.scrollInterval = kDefaultScrollInterval;
     
     // scrollview
-    self.scrollView = [[UIScrollView alloc] init];
-    [self addSubview:self.scrollView];
+    if (!self.scrollView) {
+        self.scrollView = [[UIScrollView alloc] init];
+        [self addSubview:self.scrollView];
+    }
     
     self.scrollView.translatesAutoresizingMaskIntoConstraints = NO;
     self.scrollView.pagingEnabled = YES;
@@ -81,7 +74,9 @@
     self.scrollView.delegate = self;
     
     // UIPageControl
-    self.pageControl = [[UIPageControl alloc] init];
+    if (!self.pageControl) {
+        self.pageControl = [[UIPageControl alloc] init];
+    }
     self.pageControl.userInteractionEnabled = YES;
     self.pageControl.translatesAutoresizingMaskIntoConstraints = NO;
     self.pageControl.numberOfPages = self.count;
