@@ -6,7 +6,7 @@ ImagePlayerView
 * UIPageControl, remove option
 
 ##Show
-![image](https://raw.githubusercontent.com/interchen/ImagePlayerView/master/Images/ImagePlayerView-01.png)
+![image](https://github.com/interchen/ImagePlayerView/blob/master/ImageViewPlayer.gif)
 
 ##Installation with CocoaPods
 ```objective-c
