@@ -70,6 +70,7 @@
     self.scrollView.showsHorizontalScrollIndicator = NO;
     self.scrollView.showsVerticalScrollIndicator = NO;
     self.scrollView.directionalLockEnabled = YES;
+    self.scrollView.scrollsToTop = NO;
     
     self.scrollView.delegate = self;
     
