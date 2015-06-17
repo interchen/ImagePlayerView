@@ -454,10 +454,7 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 				);
 				INFOPLIST_FILE = "ImagePlayerViewDemo/ImagePlayerViewDemo-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"/Users/chenyanjun/Projects/Github/ImagePlayerView/SDWebImage/build/Debug-iphoneos",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -481,10 +478,7 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 				);
 				INFOPLIST_FILE = "ImagePlayerViewDemo/ImagePlayerViewDemo-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"/Users/chenyanjun/Projects/Github/ImagePlayerView/SDWebImage/build/Debug-iphoneos",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
