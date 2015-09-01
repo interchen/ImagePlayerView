@@ -281,6 +281,10 @@
         }
     }
     
+    if (self.imagePlayerViewDelegate && [self.imagePlayerViewDelegate respondsToSelector:@selector(imagePlayerView:didScorllIndex:)]) {
+        [self.imagePlayerViewDelegate imagePlayerView:self didScorllIndex:currentIndex];
+    }
+    
     self.pageControl.currentPage = currentIndex;
 }
 
