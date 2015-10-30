@@ -251,10 +251,6 @@
     UIImageView *imageView = (UIImageView *)[self.scrollView viewWithTag:(nextPage + kStartTag)];
     [self.scrollView scrollRectToVisible:imageView.frame animated:animated];
     
-    if (self.imagePlayerViewDelegate && [self.imagePlayerViewDelegate respondsToSelector:@selector(imagePlayerView:didScorllIndex:)]) {
-        [self.imagePlayerViewDelegate imagePlayerView:self didScorllIndex:nextPage];
-    }
-    
     self.pageControl.currentPage = nextPage;
 }
 

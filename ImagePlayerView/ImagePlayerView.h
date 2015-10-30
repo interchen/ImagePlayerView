@@ -111,10 +111,9 @@ typedef NS_ENUM(NSInteger, ICPageControlPosition) {
 - (void)imagePlayerView:(ImagePlayerView *)imagePlayerView didTapAtIndex:(NSInteger)index;
 
 /**
- *
- *  图片切换时的 action 回调
+ *  Scroll ImageView action
  *  @param imagePlayerView ImagePlayerView object
- *  @param index           当前的页码
+ *  @param index           current index
  **/
 - (void)imagePlayerView:(ImagePlayerView *)imagePlayerView didScorllIndex:(NSInteger)index;
 
