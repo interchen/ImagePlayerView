@@ -6,7 +6,7 @@ ImagePlayerView
 * custom UIPageControl position
 
 ##Show
-![image](https://github.com/interchen/ImagePlayerView/blob/master/ImageViewPlayer.gif)
+![image](https://github.com/interchen/ImagePlayerView/blob/master/endless.gif)
 
 ##Installation with CocoaPods
 ```objective-c
