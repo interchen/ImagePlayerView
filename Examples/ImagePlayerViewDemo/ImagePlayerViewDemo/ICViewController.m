@@ -34,6 +34,9 @@
     // hide pageControl or not
     self.imagePlayerView.hidePageControl = NO;
     
+    // endless scroll
+    self.imagePlayerView.endlessScroll = YES;
+    
     // adjust edgeInset
 //    self.imagePlayerView.edgeInsets = UIEdgeInsetsMake(10, 20, 30, 40);
     
