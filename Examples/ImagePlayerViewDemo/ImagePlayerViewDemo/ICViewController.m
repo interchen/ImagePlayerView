@@ -26,7 +26,7 @@
     self.imagePlayerView.imagePlayerViewDelegate = self;
     
     // set auto scroll interval to x seconds
-    self.imagePlayerView.scrollInterval = 5.0f;
+    self.imagePlayerView.scrollInterval = 1.8f;
     
     // adjust pageControl position
     self.imagePlayerView.pageControlPosition = ICPageControlPosition_BottomCenter;

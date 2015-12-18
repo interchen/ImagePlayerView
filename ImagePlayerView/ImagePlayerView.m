@@ -250,19 +250,18 @@
     
     NSInteger currentPage = self.pageControl.currentPage;
     NSInteger nextPage = currentPage + 1;
-    if (nextPage == self.count) {
+    if (!self.endlessScroll
+        && nextPage == self.count) {
         nextPage = 0;
     }
     
-    BOOL animated = YES;
-    if (nextPage == 0) {
-        animated = NO;
-    }
+//    BOOL animated = YES;
+//    if (nextPage == 0) {
+//        animated = NO;
+//    }
     
     UIImageView *imageView = (UIImageView *)[self.scrollView viewWithTag:(nextPage + kStartTag)];
-    [self.scrollView scrollRectToVisible:imageView.frame animated:animated];
-    
-    self.pageControl.currentPage = nextPage;
+    [self.scrollView scrollRectToVisible:imageView.frame animated:YES];
 }
 
 #pragma mark - scroll delegate
@@ -273,7 +272,17 @@
     }
 }
 
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
+{
+    [self didEndScroll:scrollView];
+}
+
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    [self didEndScroll:scrollView];
+}
+
+- (void)didEndScroll:(UIScrollView *)scrollView
 {
     // when user scrolls manually, stop timer and start timer again to avoid next scroll immediatelly
     if (self.autoScrollTimer && self.autoScrollTimer.isValid) {
