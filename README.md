@@ -1,9 +1,9 @@
 ImagePlayerView
 ===============
 
-* Show a group of images in view
-* Support Auto Layout
-* UIPageControl, remove option
+* show a group of images in view
+* base on AutoLayout
+* custom UIPageControl position
 
 ##Show
 ![image](https://github.com/interchen/ImagePlayerView/blob/master/ImageViewPlayer.gif)
@@ -51,6 +51,11 @@ self.imagePlayerView.hidePageControl = NO;
 ###adjust edgeInset
 ```objective-c
 self.imagePlayerView.edgeInsets = UIEdgeInsetsMake(10, 20, 30, 40);
+```
+
+###endless switch
+```objective-c
+self.imagePlayerView.endlessScroll = YES;
 ```
 
 ##Versions
