@@ -4,6 +4,7 @@ ImagePlayerView
 * show a group of images in view
 * base on AutoLayout
 * custom UIPageControl position
+* support infinity scroll
 
 ##Show
 ![image](https://github.com/interchen/ImagePlayerView/blob/master/endless.gif)
