@@ -38,6 +38,18 @@ self.imageURLs = @[[NSURL URLWithString:@"http://sudasuta.com/wp-content/uploads
     imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[self.imageURLs objectAtIndex:index]]];
 }
 ```
+###important
+> clear imagePlayerView instance
+
+```objective-c
+- (void)dealloc
+{
+    // clear
+    [self.imagePlayerView stopTimer];
+    self.imagePlayerView.imagePlayerViewDelegate = nil;
+    self.imagePlayerView = nil;
+}
+```
 
 ###adjust pageControl position
 ```objective-c
