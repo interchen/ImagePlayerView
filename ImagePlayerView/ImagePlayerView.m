@@ -104,6 +104,13 @@
 - (void)dealloc
 {
     [self removeObserver:self forKeyPath:@"bounds"];
+    
+    if (self.autoScrollTimer) {
+        [self.autoScrollTimer invalidate];
+        self.autoScrollTimer = nil;
+    }
+    self.scrollView.delegate = nil;
+    self.imagePlayerViewDelegate = nil;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
