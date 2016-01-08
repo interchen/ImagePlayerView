@@ -4,6 +4,7 @@ ImagePlayerView
 * show a group of images in view
 * base on AutoLayout
 * custom UIPageControl position
+* support infinity scroll
 
 ##Show
 ![image](https://github.com/interchen/ImagePlayerView/blob/master/endless.gif)
@@ -35,6 +36,18 @@ self.imageURLs = @[[NSURL URLWithString:@"http://sudasuta.com/wp-content/uploads
 //    [imageView setImageWithURL:[self.imageURLs objectAtIndex:index] placeholderImage:nil];
     
     imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[self.imageURLs objectAtIndex:index]]];
+}
+```
+###important
+> clear imagePlayerView instance
+
+```objective-c
+- (void)dealloc
+{
+    // clear
+    [self.imagePlayerView stopTimer];
+    self.imagePlayerView.imagePlayerViewDelegate = nil;
+    self.imagePlayerView = nil;
 }
 ```
 
