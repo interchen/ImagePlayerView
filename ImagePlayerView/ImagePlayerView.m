@@ -249,20 +249,6 @@
 }
 
 #pragma mark - auto scroll timer
-- (void)setAutoScroll:(BOOL)autoScroll
-{
-    _autoScroll = autoScroll;
-    
-    if (autoScroll) {
-        [self restartTimer];
-    } else {
-        if (self.autoScrollTimer && self.autoScrollTimer.isValid) {
-            [self.autoScrollTimer invalidate];
-            self.autoScrollTimer = nil;
-        }
-    }
-}
-
 - (void)setScrollInterval:(NSUInteger)scrollInterval
 {
     _scrollInterval = scrollInterval;
@@ -306,7 +292,7 @@
 - (void)didEndScroll:(UICollectionView *)collectionView
 {
     // when user scrolls manually, stop timer and start timer again to avoid scrolling to next immediatelly
-    if (self.autoScroll) {
+    if (self.scrollInterval > 0) {
         [self restartTimer];
     }
     
