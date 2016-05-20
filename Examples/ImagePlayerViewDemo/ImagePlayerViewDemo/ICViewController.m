@@ -10,6 +10,7 @@
 
 @interface ICViewController () <ImagePlayerViewDelegate>
 @property (nonatomic, strong) NSArray *imageURLs;
+@property (nonatomic, strong) NSCache *imageCache;
 @end
 
 @implementation ICViewController
@@ -19,14 +20,16 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
+    _imageCache = [NSCache new];
+    
     self.imageURLs = @[[NSURL URLWithString:@"http://sudasuta.com/wp-content/uploads/2013/10/10143181686_375e063f2c_z.jpg"],
-                       [NSURL URLWithString:@"http://www.yancheng.gov.cn/ztzl/zgycddhsdgy/xwdt/201109/W020110902584601289616.jpg"],
-                       [NSURL URLWithString:@"http://fzone.oushinet.com/bbs/data/attachment/forum/201208/15/074140zsb6ko6hfhzrb40q.jpg"]];
+                       [NSURL URLWithString:@"http://img01.taopic.com/150920/240455-1509200H31810.jpg"],
+                       [NSURL URLWithString:@"http://img.taopic.com/uploads/allimg/110906/1382-110Z611025585.jpg"]];
 
     self.imagePlayerView.imagePlayerViewDelegate = self;
     
     // set auto scroll interval to x seconds
-    self.imagePlayerView.scrollInterval = 1.8f;
+    self.imagePlayerView.scrollInterval = 3.0f;
     
     // adjust pageControl position
     self.imagePlayerView.pageControlPosition = ICPageControlPosition_BottomCenter;
@@ -37,8 +40,10 @@
     // endless scroll
     self.imagePlayerView.endlessScroll = YES;
     
+    self.imagePlayerView.autoScroll = YES;
+    
     // adjust edgeInset
-//    self.imagePlayerView.edgeInsets = UIEdgeInsetsMake(10, 20, 30, 40);
+    self.imagePlayerView.edgeInsets = UIEdgeInsetsMake(10, 20, 30, 40);
     
     [self.imagePlayerView reloadData];
     
@@ -61,8 +66,18 @@
     // recommend to use SDWebImage lib to load web image
 //    [imageView setImageWithURL:[self.imageURLs objectAtIndex:index] placeholderImage:nil];
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[self.imageURLs objectAtIndex:index]]];
+    NSURL *imageURL = [self.imageURLs objectAtIndex:index];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        UIImage *image = [self.imageCache objectForKey:imageURL.absoluteString];
+        if (!image) {
+            NSData *imageData = [NSData dataWithContentsOfURL:imageURL];
+            image = [UIImage imageWithData:imageData];
+            [self.imageCache setObject:image forKey:imageURL.absoluteString];
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // Update the UI
+            imageView.image = image;
+        });
     });
 }
 

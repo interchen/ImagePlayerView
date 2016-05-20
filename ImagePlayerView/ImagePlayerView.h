@@ -39,47 +39,6 @@ typedef NS_ENUM(NSInteger, ICPageControlPosition) {
  */
 - (void)stopTimer;
 
-#pragma mark - deprecated methods
-/**
- *  Init image player
- *
- *  @param imageURLs   NSURL array, image path
- *  @param placeholder placeholder image
- *  @param delegate    delegate
- *  @deprecated use - (void)initWithCount:(NSInteger)count delegate:(id<ImagePlayerViewDelegate>)delegate instead
- */
-- (void)initWithImageURLs:(NSArray *)imageURLs placeholder:(UIImage *)placeholder delegate:(id<ImagePlayerViewDelegate>)delegate DEPRECATED_ATTRIBUTE;
-
-/**
- *  Init image player
- *
- *  @param imageURLs   NSURL array, image path
- *  @param placeholder placeholder image
- *  @param delegate    delegate
- *  @param edgeInsets  scroll view edgeInsets
- *  @deprecated use - (void)initWithCount:(NSInteger)count delegate:(id<ImagePlayerViewDelegate>)delegate edgeInsets:(UIEdgeInsets)edgeInsets instead
- */
-- (void)initWithImageURLs:(NSArray *)imageURLs placeholder:(UIImage *)placeholder delegate:(id<ImagePlayerViewDelegate>)delegate edgeInsets:(UIEdgeInsets)edgeInsets DEPRECATED_ATTRIBUTE;
-
-/**
- *  Init image player
- *
- *  @param count
- *  @param delegate
- *  @deprecated implement ImagePlayerViewDelegate
- */
-- (void)initWithCount:(NSInteger)count delegate:(id<ImagePlayerViewDelegate>)delegate DEPRECATED_ATTRIBUTE;
-
-/**
- *  Init image player
- *
- *  @param count
- *  @param delegate
- *  @param edgeInsets scroll view edgeInsets
- *  @deprecated implement ImagePlayerViewDelegate
- */
-- (void)initWithCount:(NSInteger)count delegate:(id<ImagePlayerViewDelegate>)delegate edgeInsets:(UIEdgeInsets)edgeInsets DEPRECATED_ATTRIBUTE;
-
 @end
 
 #pragma mark - ImagePlayerViewDelegate
@@ -119,14 +78,4 @@ typedef NS_ENUM(NSInteger, ICPageControlPosition) {
  **/
 - (void)imagePlayerView:(ImagePlayerView *)imagePlayerView didScorllIndex:(NSInteger)index;
 
-#pragma mark - deprecated protocol methods
-/**
- *  Tap ImageView action
- *
- *  @param imagePlayerView ImagePlayerView object
- *  @param index           index of imageview
- *  @param imageURL        image url
- *  @deprecated use - (void)imagePlayerView:(ImagePlayerView *)imagePlayerView didTapAtIndex:(NSInteger)index instead
- */
-- (void)imagePlayerView:(ImagePlayerView *)imagePlayerView didTapAtIndex:(NSInteger)index imageURL:(NSURL *)imageURL DEPRECATED_ATTRIBUTE;
 @end

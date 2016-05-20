@@ -8,19 +8,69 @@
 
 #import "ImagePlayerView.h"
 
-#define kStartTag   1000
 #define kDefaultScrollInterval  2
+#define kCellIdentifier @"ImagePlayerViewCell"
 
-@interface ImagePlayerView() <UIScrollViewDelegate>
-@property (nonatomic, strong) UIScrollView *scrollView;
+
+#pragma mark - Category RemoveConstraints
+// refer from @marchinram http://stackoverflow.com/questions/24418884/remove-all-constraints-affecting-a-uiview
+@interface UIView (RemoveConstraints)
+- (void)removeAllConstraints;
+@end
+
+@implementation UIView (RemoveConstraints)
+- (void)removeAllConstraints
+{
+    UIView *superview = self.superview;
+    while (superview != nil) {
+        for (NSLayoutConstraint *c in superview.constraints) {
+            if (c.firstItem == self || c.secondItem == self) {
+                [superview removeConstraint:c];
+            }
+        }
+        superview = superview.superview;
+    }
+    
+    [self removeConstraints:self.constraints];
+}
+@end
+
+#pragma mark - ImagePlayerViewCell
+@interface ImagePlayerViewCell : UICollectionViewCell
+@property (nonatomic, strong) UIImageView *imageView;
+@end
+
+@implementation ImagePlayerViewCell
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    {
+        self.imageView = [[UIImageView alloc] init];
+        self.imageView.contentMode = UIViewContentModeScaleToFill;
+        self.imageView.userInteractionEnabled = YES;
+        self.imageView.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        [self.contentView addSubview:self.imageView];
+        
+        // fill cell
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[imageView]-0-|" options:kNilOptions metrics:0 views:@{@"imageView": self.imageView}]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[imageView]-0-|" options:kNilOptions metrics:0 views:@{@"imageView": self.imageView}]];
+    }
+    return self;
+}
+@end
+
+#pragma mark - ImagePlayerView
+@interface ImagePlayerView() <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, assign) NSInteger count;
 @property (nonatomic, strong) NSTimer *autoScrollTimer;
-@property (nonatomic, strong) NSMutableArray *pageControlConstraints;
-@property (nonatomic, strong) NSMutableArray *scrollViewConstraints;
 @end
 
 @implementation ImagePlayerView
 
+#pragma mark - init
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -49,31 +99,61 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [self removeObserver:self forKeyPath:@"bounds"];
+    
+    if (self.autoScrollTimer) {
+        [self.autoScrollTimer invalidate];
+        self.autoScrollTimer = nil;
+    }
+    self.collectionView.delegate = nil;
+    self.collectionView.dataSource = nil;
+    self.imagePlayerViewDelegate = nil;
+}
+
 - (void)_init
 {
     [self addObserver:self forKeyPath:@"bounds" options:NSKeyValueObservingOptionNew context:NULL];
     
-    self.scrollViewConstraints = [NSMutableArray array];
+    [self setupCollectionView];
+    [self setupPageControl];
     
+    // default settings
     self.scrollInterval = kDefaultScrollInterval;
+    self.pageControlPosition = ICPageControlPosition_BottomRight;
+    self.edgeInsets = UIEdgeInsetsZero;
     
-    // scrollview
-    if (!self.scrollView) {
-        self.scrollView = [[UIScrollView alloc] init];
-        [self addSubview:self.scrollView];
+    [self reloadData];
+}
+
+- (void)setupCollectionView {
+    if (!self.collectionView) {
+        UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
+        layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+        layout.minimumInteritemSpacing = 0;
+        layout.minimumLineSpacing = 0;
+        
+        self.collectionView = [[UICollectionView alloc] initWithFrame:self.bounds collectionViewLayout:layout];
+        self.collectionView.backgroundColor = [UIColor whiteColor];
+        
+        self.collectionView.translatesAutoresizingMaskIntoConstraints = NO;
+        self.collectionView.pagingEnabled = YES;
+        self.collectionView.bounces = NO;
+        self.collectionView.showsHorizontalScrollIndicator = NO;
+        self.collectionView.showsVerticalScrollIndicator = NO;
+        self.collectionView.scrollsToTop = NO;
+        
+        [self.collectionView registerClass:[ImagePlayerViewCell class] forCellWithReuseIdentifier:kCellIdentifier];
+        
+        self.collectionView.delegate = self;
+        self.collectionView.dataSource = self;
+        
+        [self addSubview:self.collectionView];
     }
-    
-    self.scrollView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.scrollView.pagingEnabled = YES;
-    self.scrollView.bounces = NO;
-    self.scrollView.showsHorizontalScrollIndicator = NO;
-    self.scrollView.showsVerticalScrollIndicator = NO;
-    self.scrollView.directionalLockEnabled = YES;
-    self.scrollView.scrollsToTop = NO;
-    
-    self.scrollView.delegate = self;
-    
-    // UIPageControl
+}
+
+- (void)setupPageControl {
     if (!self.pageControl) {
         self.pageControl = [[UIPageControl alloc] init];
     }
@@ -83,34 +163,6 @@
     self.pageControl.currentPage = 0;
     [self.pageControl addTarget:self action:@selector(handleClickPageControl:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.pageControl];
-    
-    NSArray *pageControlVConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[pageControl]-0-|"
-                                                                               options:kNilOptions
-                                                                               metrics:nil
-                                                                                 views:@{@"pageControl": self.pageControl}];
-    NSArray *pageControlHConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[pageControl]-|"
-                                                                               options:kNilOptions
-                                                                               metrics:nil
-                                                                                 views:@{@"pageControl": self.pageControl}];
-    self.pageControlConstraints = [NSMutableArray arrayWithArray:pageControlVConstraints];
-    [self.pageControlConstraints addObjectsFromArray:pageControlHConstraints];
-    [self addConstraints:self.pageControlConstraints];
-
-    self.edgeInsets = UIEdgeInsetsZero;
-    
-    [self reloadData];
-}
-
-- (void)dealloc
-{
-    [self removeObserver:self forKeyPath:@"bounds"];
-    
-    if (self.autoScrollTimer) {
-        [self.autoScrollTimer invalidate];
-        self.autoScrollTimer = nil;
-    }
-    self.scrollView.delegate = nil;
-    self.imagePlayerViewDelegate = nil;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -122,84 +174,52 @@
 
 - (void)reloadData
 {
-    // remove subview from scrollview first
-    for (UIView *subView in self.scrollView.subviews) {
-        [subView removeFromSuperview];
-    }
-    
     self.count = [self.imagePlayerViewDelegate numberOfItems];
     
     self.pageControl.numberOfPages = self.count;
-    self.pageControl.currentPage = 0;
     
-    if (self.count == 0) {
-        return;
-    }
-    
-    int itemCount = (int)self.count;
+    [self.collectionView reloadData];
+}
+
+#pragma mark UICollectionView delegate
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    NSInteger itemCount = self.count;
     if (self.endlessScroll) {
         itemCount += 1;
     }
-    
-    CGFloat width = self.bounds.size.width - self.edgeInsets.left - self.edgeInsets.right;
-    CGFloat height = self.bounds.size.height - self.edgeInsets.top - self.edgeInsets.bottom;
-    
-    for (int i = 0; i < itemCount; i++) {
-        UIImageView *imageView = [[UIImageView alloc] init];
-        imageView.contentMode = UIViewContentModeScaleToFill;
-        imageView.tag = kStartTag + i;
-        imageView.userInteractionEnabled = YES;
-        imageView.translatesAutoresizingMaskIntoConstraints = NO;
-        [imageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)]];
-        [self.scrollView addSubview:imageView];
-        
-        [imageView addConstraint:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:width]];
-        [imageView addConstraint:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:height]];
-        
-        int index = i;
-        if (index == self.count) {
-            index = 0;
-        }
-        [self.imagePlayerViewDelegate imagePlayerView:self loadImageForImageView:imageView index:index];
-    }
-    
-    // constraint
-    NSMutableDictionary *viewsDictionary = [NSMutableDictionary dictionary];
-    NSMutableArray *imageViewNames = [NSMutableArray array];
-    for (int i = kStartTag; i < kStartTag + itemCount; i++) {
-        NSString *imageViewName = [NSString stringWithFormat:@"imageView%d", i - kStartTag];
-        [imageViewNames addObject:imageViewName];
-        
-        UIImageView *imageView = (UIImageView *)[self.scrollView viewWithTag:i];
-        [viewsDictionary setObject:imageView forKey:imageViewName];
-    }
-    
-    [self.scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-0-[%@]-0-|", [imageViewNames objectAtIndex:0]]
-                                                                            options:kNilOptions
-                                                                            metrics:nil
-                                                                              views:viewsDictionary]];
-    
-    NSMutableString *hConstraintString = [NSMutableString string];
-    [hConstraintString appendString:@"H:|-0"];
-    for (NSString *imageViewName in imageViewNames) {
-        [hConstraintString appendFormat:@"-[%@]-0", imageViewName];
-    }
-    [hConstraintString appendString:@"-|"];
-    
-    [self.scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:hConstraintString
-                                                                            options:NSLayoutFormatAlignAllTop
-                                                                            metrics:nil
-                                                                              views:viewsDictionary]];
-    
-    self.scrollView.contentSize = CGSizeMake(self.scrollView.frame.size.width * itemCount, self.scrollView.frame.size.height);
-    self.scrollView.contentInset = UIEdgeInsetsZero;
+    return itemCount;
 }
 
-#pragma mark - actions
-- (void)handleTapGesture:(UIGestureRecognizer *)tapGesture
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UIImageView *imageView = (UIImageView *)tapGesture.view;
-    NSInteger index = imageView.tag - kStartTag;
+    ImagePlayerViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellIdentifier forIndexPath:indexPath];
+    
+    // check if reused
+    BOOL isReused = cell.tag != indexPath.row;
+    if ((indexPath.row == 0 || indexPath.row == self.count)) {
+        // for endless scroll, the first one is the same as the last one
+        // so don't clear image or there will be a short time blank
+        isReused = false;
+    }
+    if (isReused) {
+        cell.imageView.image = nil;
+    }
+    
+    cell.tag = indexPath.row;
+    
+    NSInteger index = indexPath.row;
+    if (index == self.count) {
+        index = 0;
+    }
+    [self.imagePlayerViewDelegate imagePlayerView:self loadImageForImageView:cell.imageView index:index];
+    
+    return cell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger index = indexPath.row;
     if (index == self.count) {
         index = 0;
     }
@@ -209,26 +229,32 @@
     }
 }
 
-- (void)handleClickPageControl:(UIPageControl *)sender
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.autoScrollTimer && self.autoScrollTimer.isValid) {
-        [self.autoScrollTimer invalidate];
-    }
-    self.autoScrollTimer = [NSTimer scheduledTimerWithTimeInterval:self.scrollInterval target:self selector:@selector(handleScrollTimer:) userInfo:nil repeats:YES];
-    
-    UIImageView *imageView = (UIImageView *)[self.scrollView viewWithTag:(sender.currentPage + kStartTag)];
-    [self.scrollView scrollRectToVisible:imageView.frame animated:YES];
+    return collectionView.bounds.size;
 }
 
-#pragma mark - auto scroll
+#pragma mark - actions
+- (void)handleClickPageControl:(UIPageControl *)sender
+{
+    [self restartTimer];
+    
+    if (sender.currentPage >= [self.collectionView numberOfItemsInSection:0]) {
+        return;
+    }
+    
+    [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:sender.currentPage inSection:0]
+                                atScrollPosition:UICollectionViewScrollPositionNone
+                                        animated:YES];
+}
+
+#pragma mark - auto scroll timer
 - (void)setAutoScroll:(BOOL)autoScroll
 {
     _autoScroll = autoScroll;
     
     if (autoScroll) {
-        if (!self.autoScrollTimer || !self.autoScrollTimer.isValid) {
-            self.autoScrollTimer = [NSTimer scheduledTimerWithTimeInterval:self.scrollInterval target:self selector:@selector(handleScrollTimer:) userInfo:nil repeats:YES];
-        }
+        [self restartTimer];
     } else {
         if (self.autoScrollTimer && self.autoScrollTimer.isValid) {
             [self.autoScrollTimer invalidate];
@@ -240,13 +266,7 @@
 - (void)setScrollInterval:(NSUInteger)scrollInterval
 {
     _scrollInterval = scrollInterval;
-    
-    if (self.autoScrollTimer && self.autoScrollTimer.isValid) {
-        [self.autoScrollTimer invalidate];
-        self.autoScrollTimer = nil;
-    }
-    
-    self.autoScrollTimer = [NSTimer scheduledTimerWithTimeInterval:self.scrollInterval target:self selector:@selector(handleScrollTimer:) userInfo:nil repeats:YES];
+    [self restartTimer];
 }
 
 - (void)handleScrollTimer:(NSTimer *)timer
@@ -257,60 +277,45 @@
     
     NSInteger currentPage = self.pageControl.currentPage;
     NSInteger nextPage = currentPage + 1;
-    if (!self.endlessScroll
+    if (self.endlessScroll
         && nextPage == self.count) {
         nextPage = 0;
     }
     
-//    BOOL animated = YES;
-//    if (nextPage == 0) {
-//        animated = NO;
-//    }
+    if (nextPage >= [self.collectionView numberOfItemsInSection:0]) {
+        return;
+    }
     
-    UIImageView *imageView = (UIImageView *)[self.scrollView viewWithTag:(nextPage + kStartTag)];
-    [self.scrollView scrollRectToVisible:imageView.frame animated:YES];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:nextPage inSection:0];
+    [self.collectionView scrollToItemAtIndexPath:indexPath
+                                atScrollPosition:UICollectionViewScrollPositionNone
+                                        animated:YES];
 }
 
 #pragma mark - scroll delegate
--(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    // disable v direction scroll
-    if (scrollView.contentOffset.y > 0) {
-        [scrollView setContentOffset:CGPointMake(scrollView.contentOffset.x, 0)];
+- (void)scrollViewDidEndScrollingAnimation:(UICollectionView *)collectionView
+{
+    [self didEndScroll:collectionView];
+}
+
+- (void)scrollViewDidEndDecelerating:(UICollectionView *)collectionView
+{
+    [self didEndScroll:collectionView];
+}
+
+- (void)didEndScroll:(UICollectionView *)collectionView
+{
+    // when user scrolls manually, stop timer and start timer again to avoid scrolling to next immediatelly
+    if (self.autoScroll) {
+        [self restartTimer];
     }
-}
-
-- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
-{
-    [self didEndScroll:scrollView];
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-    [self didEndScroll:scrollView];
-}
-
-- (void)didEndScroll:(UIScrollView *)scrollView
-{
-    // when user scrolls manually, stop timer and start timer again to avoid next scroll immediatelly
-    if (self.autoScrollTimer && self.autoScrollTimer.isValid) {
-        [self.autoScrollTimer invalidate];
-    }
-    self.autoScrollTimer = [NSTimer scheduledTimerWithTimeInterval:self.scrollInterval target:self selector:@selector(handleScrollTimer:) userInfo:nil repeats:YES];
     
     // update UIPageControl
-    CGRect visiableRect = CGRectMake(scrollView.contentOffset.x, scrollView.contentOffset.y, scrollView.bounds.size.width, scrollView.bounds.size.height);
-    NSInteger currentIndex = 0;
-    for (UIImageView *imageView in scrollView.subviews) {
-        if ([imageView isKindOfClass:[UIImageView class]]) {
-            if (CGRectContainsRect(visiableRect, imageView.frame)) {
-                currentIndex = imageView.tag - kStartTag;
-                break;
-            }
-        }
-    }
-    
+    NSInteger currentIndex = collectionView.contentOffset.x / collectionView.bounds.size.width;
     if (currentIndex == self.count) {
-        [scrollView setContentOffset:CGPointMake(0, 0)];
+        // delay 0.1s or there will be a short time blank
+        [self performSelector:@selector(scrollToFirstItem) withObject:nil afterDelay:0.1];
+        
         currentIndex = 0;
     }
     
@@ -321,7 +326,22 @@
     self.pageControl.currentPage = currentIndex;
 }
 
+- (void)scrollToFirstItem {
+    [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+                                atScrollPosition:UICollectionViewScrollPositionNone
+                                        animated:NO];
+}
+
 #pragma mark - settings
+- (void)restartTimer {
+    if (self.autoScrollTimer && self.autoScrollTimer.isValid) {
+        [self.autoScrollTimer invalidate];
+        self.autoScrollTimer = nil;
+    }
+    
+    self.autoScrollTimer = [NSTimer scheduledTimerWithTimeInterval:self.scrollInterval target:self selector:@selector(handleScrollTimer:) userInfo:nil repeats:YES];
+}
+
 - (void)setPageControlPosition:(ICPageControlPosition)pageControlPosition
 {
     NSString *vFormat = nil;
@@ -368,23 +388,17 @@
             break;
     }
     
-    [self removeConstraints:self.pageControlConstraints];
+    [self.pageControl removeAllConstraints];
     
-    NSArray *pageControlVConstraints = [NSLayoutConstraint constraintsWithVisualFormat:vFormat
-                                                                               options:kNilOptions
-                                                                               metrics:nil
-                                                                                 views:@{@"pageControl": self.pageControl}];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:vFormat
+                                                                 options:kNilOptions
+                                                                 metrics:nil
+                                                                   views:@{@"pageControl": self.pageControl}]];
     
-    NSArray *pageControlHConstraints = [NSLayoutConstraint constraintsWithVisualFormat:hFormat
-                                                                               options:kNilOptions
-                                                                               metrics:nil
-                                                                                 views:@{@"pageControl": self.pageControl}];
-    
-    [self.pageControlConstraints removeAllObjects];
-    [self.pageControlConstraints addObjectsFromArray:pageControlVConstraints];
-    [self.pageControlConstraints addObjectsFromArray:pageControlHConstraints];
-    
-    [self addConstraints:self.pageControlConstraints];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:hFormat
+                                                                 options:kNilOptions
+                                                                 metrics:nil
+                                                                   views:@{@"pageControl": self.pageControl}]];
 }
 
 - (void)setHidePageControl:(BOOL)hidePageControl
@@ -396,41 +410,18 @@
 {
     _edgeInsets = edgeInsets;
     
-    [self removeConstraints:self.scrollViewConstraints];
+    [self.collectionView removeAllConstraints];
     
-    NSArray *scrollViewVConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-top-[scrollView]-bottom-|"
-                                                                              options:kNilOptions
-                                                                              metrics:@{@"top": @(self.edgeInsets.top),
-                                                                                        @"bottom": @(self.edgeInsets.bottom)}
-                                                                                views:@{@"scrollView": self.scrollView}];
-    NSArray *scrollViewHConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-left-[scrollView]-right-|"
-                                                                              options:kNilOptions
-                                                                              metrics:@{@"left": @(self.edgeInsets.left),
-                                                                                        @"right": @(self.edgeInsets.right)}
-                                                                                views:@{@"scrollView": self.scrollView}];
-    
-    [self.scrollViewConstraints removeAllObjects];
-    [self.scrollViewConstraints addObjectsFromArray:scrollViewHConstraints];
-    [self.scrollViewConstraints addObjectsFromArray:scrollViewVConstraints];
-    
-    [self addConstraints:self.scrollViewConstraints];
-    
-    // update imageview constraints
-    CGFloat width = self.bounds.size.width - self.edgeInsets.left - self.edgeInsets.right;
-    CGFloat height = self.bounds.size.height - self.edgeInsets.top - self.edgeInsets.bottom;
-    
-    for (UIView *subView in self.scrollView.subviews) {
-        if ([subView isKindOfClass:[UIImageView class]]) {
-            UIImageView *imageView = (UIImageView *)subView;
-            for (NSLayoutConstraint *constraint in imageView.constraints) {
-                if (constraint.firstAttribute == NSLayoutAttributeWidth) {
-                    constraint.constant = width;
-                } else if (constraint.firstAttribute == NSLayoutAttributeHeight) {
-                    constraint.constant = height;
-                }
-            }
-        }
-    }
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-top-[collectionView]-bottom-|"
+                                                                 options:kNilOptions
+                                                                 metrics:@{@"top": @(self.edgeInsets.top),
+                                                                           @"bottom": @(self.edgeInsets.bottom)}
+                                                                   views:@{@"collectionView": self.collectionView}]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-left-[collectionView]-right-|"
+                                                                 options:kNilOptions
+                                                                 metrics:@{@"left": @(self.edgeInsets.left),
+                                                                           @"right": @(self.edgeInsets.right)}
+                                                                   views:@{@"collectionView": self.collectionView}]];
 }
 
 - (void)stopTimer
@@ -440,99 +431,6 @@
         self.autoScrollTimer = nil;
     }
 }
-
-#pragma mark - deprecated methods
-// @deprecated use - (void)initWithCount:(NSInteger)count delegate:(id<ImagePlayerViewDelegate>)delegate instead
-- (void)initWithImageURLs:(NSArray *)imageURLs placeholder:(UIImage *)placeholder delegate:(id<ImagePlayerViewDelegate>)delegate
-{
-    [self initWithCount:imageURLs.count delegate:delegate edgeInsets:UIEdgeInsetsZero];
-}
-
-// @deprecated use - (void)initWithCount:(NSInteger)count delegate:(id<ImagePlayerViewDelegate>)delegate edgeInsets:(UIEdgeInsets)edgeInsets instead
-- (void)initWithImageURLs:(NSArray *)imageURLs placeholder:(UIImage *)placeholder delegate:(id<ImagePlayerViewDelegate>)delegate edgeInsets:(UIEdgeInsets)edgeInsets
-{
-    [self initWithCount:imageURLs.count delegate:delegate edgeInsets:edgeInsets];
-}
-
-// @deprecated implement ImagePlayerViewDelegate
-- (void)initWithCount:(NSInteger)count delegate:(id<ImagePlayerViewDelegate>)delegate
-{
-    [self initWithCount:count delegate:delegate edgeInsets:UIEdgeInsetsZero];
-}
-
-// @deprecated implement ImagePlayerViewDelegate
-- (void)initWithCount:(NSInteger)count delegate:(id<ImagePlayerViewDelegate>)delegate edgeInsets:(UIEdgeInsets)edgeInsets
-{
-    self.count = count;
-    self.imagePlayerViewDelegate = delegate;
-    
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-%d-[scrollView]-%d-|", (int)edgeInsets.top, (int)edgeInsets.bottom]
-                                                                 options:kNilOptions
-                                                                 metrics:nil
-                                                                   views:@{@"scrollView": self.scrollView}]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"H:|-%d-[scrollView]-%d-|", (int)edgeInsets.left, (int)edgeInsets.right]
-                                                                 options:kNilOptions
-                                                                 metrics:nil
-                                                                   views:@{@"scrollView": self.scrollView}]];
-    
-    if (count == 0) {
-        return;
-    }
-    
-    self.pageControl.numberOfPages = count;
-    self.pageControl.currentPage = 0;
-    
-    CGFloat startX = self.scrollView.bounds.origin.x;
-    CGFloat width = self.bounds.size.width - edgeInsets.left - edgeInsets.right;
-    CGFloat height = self.bounds.size.height - edgeInsets.top - edgeInsets.bottom;
-    
-    for (int i = 0; i < count; i++) {
-        startX = i * width;
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(startX, 0, width, height)];
-        imageView.contentMode = UIViewContentModeScaleToFill;
-        imageView.tag = kStartTag + i;
-        imageView.userInteractionEnabled = YES;
-        imageView.translatesAutoresizingMaskIntoConstraints = NO;
-        [imageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)]];
-        
-        [imageView addConstraint:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:width]];
-        [imageView addConstraint:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:height]];
-        
-        [self.imagePlayerViewDelegate imagePlayerView:self loadImageForImageView:imageView index:i];
-        
-        [self.scrollView addSubview:imageView];
-    }
-    
-    // constraint
-    NSMutableDictionary *viewsDictionary = [NSMutableDictionary dictionary];
-    NSMutableArray *imageViewNames = [NSMutableArray array];
-    for (int i = kStartTag; i < kStartTag + count; i++) {
-        NSString *imageViewName = [NSString stringWithFormat:@"imageView%d", i - kStartTag];
-        [imageViewNames addObject:imageViewName];
-        
-        UIImageView *imageView = (UIImageView *)[self.scrollView viewWithTag:i];
-        [viewsDictionary setObject:imageView forKey:imageViewName];
-    }
-    
-    [self.scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-0-[%@]-0-|", [imageViewNames objectAtIndex:0]]
-                                                                            options:kNilOptions
-                                                                            metrics:nil
-                                                                              views:viewsDictionary]];
-    
-    NSMutableString *hConstraintString = [NSMutableString string];
-    [hConstraintString appendString:@"H:|-0"];
-    for (NSString *imageViewName in imageViewNames) {
-        [hConstraintString appendFormat:@"-[%@]-0", imageViewName];
-    }
-    [hConstraintString appendString:@"-|"];
-    
-    [self.scrollView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:hConstraintString
-                                                                            options:NSLayoutFormatAlignAllTop
-                                                                            metrics:nil
-                                                                              views:viewsDictionary]];
-    
-    self.scrollView.contentSize = CGSizeMake(self.scrollView.frame.size.width * count, self.scrollView.frame.size.height);
-    self.scrollView.contentInset = UIEdgeInsetsZero;
-}
 @end
+
 
