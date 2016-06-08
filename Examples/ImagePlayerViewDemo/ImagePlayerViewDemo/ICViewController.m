@@ -40,8 +40,6 @@
     // endless scroll
     self.imagePlayerView.endlessScroll = YES;
     
-    self.imagePlayerView.autoScroll = YES;
-    
     // adjust edgeInset
     self.imagePlayerView.edgeInsets = UIEdgeInsetsMake(10, 20, 30, 40);
     
