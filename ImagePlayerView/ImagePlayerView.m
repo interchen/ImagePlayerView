@@ -242,7 +242,7 @@
     if (sender.currentPage >= [self.collectionView numberOfItemsInSection:0]) {
         return;
     }
-    
+
     [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:sender.currentPage inSection:0]
                                 atScrollPosition:UICollectionViewScrollPositionNone
                                         animated:YES];
@@ -325,7 +325,9 @@
         self.autoScrollTimer = nil;
     }
     
-    self.autoScrollTimer = [NSTimer scheduledTimerWithTimeInterval:self.scrollInterval target:self selector:@selector(handleScrollTimer:) userInfo:nil repeats:YES];
+    if (self.scrollInterval > 0) {
+        self.autoScrollTimer = [NSTimer scheduledTimerWithTimeInterval:self.scrollInterval target:self selector:@selector(handleScrollTimer:) userInfo:nil repeats:YES];
+    }
 }
 
 - (void)setPageControlPosition:(ICPageControlPosition)pageControlPosition

@@ -187,7 +187,7 @@
 		4B6F44DD19402114003A88A8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = Chenyanjun;
 			};
 			buildConfigurationList = 4B6F44E019402114003A88A8 /* Build configuration list for PBXProject "ImagePlayerView" */;
@@ -275,6 +275,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -377,6 +378,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "ImagePlayerViewTests/ImagePlayerViewTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.chenyanjun.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -393,6 +395,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ImagePlayerView/ImagePlayerView-Prefix.pch";
 				INFOPLIST_FILE = "ImagePlayerViewTests/ImagePlayerViewTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.chenyanjun.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = xctest;
 			};
