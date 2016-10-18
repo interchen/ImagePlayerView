@@ -20,7 +20,7 @@ typedef NS_ENUM(NSInteger, ICPageControlPosition) {
 @protocol ImagePlayerViewDelegate;
 
 @interface ImagePlayerView : UIView
-@property (nonatomic, assign) id<ImagePlayerViewDelegate> imagePlayerViewDelegate;
+@property (nonatomic, weak) id<ImagePlayerViewDelegate> imagePlayerViewDelegate;
 @property (nonatomic, strong) UIPageControl *pageControl;
 @property (nonatomic, assign) NSUInteger scrollInterval;    // scroll interval, unit: second, default is 2 seconds. set 0 to close auto scroll feature
 @property (nonatomic, assign) ICPageControlPosition pageControlPosition;    // pageControl position, defautl is bottomright
