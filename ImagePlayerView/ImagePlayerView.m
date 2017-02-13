@@ -264,7 +264,7 @@
     NSInteger currentPage = self.pageControl.currentPage;
     NSInteger nextPage = currentPage + 1;
     if (self.endlessScroll
-        && nextPage == self.count) {
+        && nextPage == self.count + 1) {
         nextPage = 0;
     }
     
