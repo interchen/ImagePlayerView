@@ -6,23 +6,23 @@ ImagePlayerView
 * custom UIPageControl position
 * support infinity scroll
 
-##Show
+## Show
 ![image](https://github.com/interchen/ImagePlayerView/blob/master/endless.gif)
 
-##Installation with CocoaPods
+## Installation with CocoaPods
 ```objective-c
 pod 'ImagePlayerView'
 ```
 
-##Usage
-###init
+## Usage
+### init
 ```objective-c
 self.imageURLs = @[[NSURL URLWithString:@"http://sudasuta.com/wp-content/uploads/2013/10/10143181686_375e063f2c_z.jpg"],
                    [NSURL URLWithString:@"http://www.yancheng.gov.cn/ztzl/zgycddhsdgy/xwdt/201109/W020110902584601289616.jpg"],
                    [NSURL URLWithString:@"http://fzone.oushinet.com/bbs/data/attachment/forum/201208/15/074140zsb6ko6hfhzrb40q.jpg"]];
 ```
 
-###implement delegate to load image
+### implement delegate to load image
 ```objective-c
 #pragma mark - ImagePlayerViewDelegate
 - (NSInteger)numberOfItems
@@ -38,7 +38,7 @@ self.imageURLs = @[[NSURL URLWithString:@"http://sudasuta.com/wp-content/uploads
     imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[self.imageURLs objectAtIndex:index]]];
 }
 ```
-###important
+### important
 > clear imagePlayerView instance
 
 ```objective-c
@@ -51,34 +51,34 @@ self.imageURLs = @[[NSURL URLWithString:@"http://sudasuta.com/wp-content/uploads
 }
 ```
 
-###adjust pageControl position
+### adjust pageControl position
 ```objective-c
 self.imagePlayerView.pageControlPosition = ICPageControlPosition_BottomLeft;
 ```
     
-###hide pageControl or not
+### hide pageControl or not
 ```objective-c
 self.imagePlayerView.hidePageControl = NO;
 ```
 
-###adjust edgeInset
+### adjust edgeInset
 ```objective-c
 self.imagePlayerView.edgeInsets = UIEdgeInsetsMake(10, 20, 30, 40);
 ```
 
-###endless switch
+### endless switch
 ```objective-c
 self.imagePlayerView.endlessScroll = YES;
 ```
 
-##Versions
-###v0.3.1
+## Versions
+### v0.3.1
 [v0.3.1](https://github.com/interchen/ImagePlayerView/tree/0.3.1) dependenced on [SDWebImage](https://github.com/rs/SDWebImage) lib, you don't need to implement delegate to load image
 ```objective-c
 pod 'ImagePlayerView', '~> 0.3.1'
 ```
 
-###from v0.4 on
+### from v0.4 on
 remove dependence on [SDWebImage](https://github.com/rs/SDWebImage) lib, you should implement delegate to load image
 ```objective-c
 pod 'ImagePlayerView'
