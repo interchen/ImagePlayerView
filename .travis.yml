@@ -1,3 +1,2 @@
 language: objective-c
-xcode_project: Examples/ImagePlayerViewDemo/ImagePlayerViewDemo.xcodeproj
-xcode_scheme: ImagePlayerViewDemo
+script: xcodebuild -project Examples/ImagePlayerViewDemo/ImagePlayerViewDemo.xcodeproj -scheme ImagePlayerViewDemo -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
