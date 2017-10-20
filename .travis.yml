@@ -1,0 +1,3 @@
+language: objective-c
+xcode_project: Examples/ImagePlayerViewDemo/ImagePlayerView.xcodeproj
+xcode_scheme: ImagePlayerViewDemo
