@@ -1,4 +1,4 @@
-ImagePlayerView
+# ImagePlayerView [![Build Status](https://travis-ci.org/interchen/ImagePlayerView.svg?branch=master)](https://travis-ci.org/interchen/ImagePlayerView)
 ===============
 
 * show a group of images in view
